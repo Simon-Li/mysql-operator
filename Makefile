@@ -22,7 +22,8 @@ else
 endif
 
 PKG             := github.com/oracle/mysql-operator
-REGISTRY        := iad.ocir.io
+#REGISTRY        := iad.ocir.io
+REGISTRY        := aipu
 SRC_DIRS        := cmd pkg test/examples
 CMD_DIRECTORIES := $(sort $(dir $(wildcard ./cmd/*/)))
 COMMANDS        := $(CMD_DIRECTORIES:./cmd/%/=%)
@@ -70,26 +71,31 @@ build: dist build-dirs Makefile
 	ARCH=$(ARCH) OS=$(OS) VERSION=$(VERSION) PKG=$(PKG) ./hack/build.sh
 	cp $(BINARIES) ./bin/$(OS)_$(ARCH)/
 
+# -t $(REGISTRY)/$(TENANT)/mysql-operator:$(VERSION)
+# -t $(REGISTRY)/$(TENANT)/mysql-agent:$(VERSION)
 .PHONY: build-docker
 build-docker:
 	@docker build \
 	--build-arg=http_proxy \
 	--build-arg=https_proxy \
-	-t $(REGISTRY)/$(TENANT)/mysql-operator:$(VERSION) \
+	-t $(REGISTRY)/mysql-operator:$(VERSION) \
 	-f docker/mysql-operator/Dockerfile .
 
 	@docker build \
 	--build-arg=http_proxy \
 	--build-arg=https_proxy \
-	-t $(REGISTRY)/$(TENANT)/mysql-agent:$(VERSION) \
+	-t $(REGISTRY)/mysql-agent:$(VERSION) \
 	-f docker/mysql-agent/Dockerfile .
 
 # Note: Only used for development, i.e. in CI the images are pushed using Wercker.
+#@docker login iad.ocir.io -u $(DOCKER_REGISTRY_USERNAME) -p '$(DOCKER_REGISTRY_PASSWORD)'
+#@docker push $(REGISTRY)/$(TENANT)/mysql-operator:$(VERSION)
+#@docker push $(REGISTRY)/$(TENANT)/mysql-agent:$(VERSION)
 .PHONY: push
-push: build build-docker
-	@docker login iad.ocir.io -u $(DOCKER_REGISTRY_USERNAME) -p '$(DOCKER_REGISTRY_PASSWORD)'
-	@docker push $(REGISTRY)/$(TENANT)/mysql-operator:$(VERSION)
-	@docker push $(REGISTRY)/$(TENANT)/mysql-agent:$(VERSION)
+push: build build-docker	
+	@docker login docker.io -u aipu -p 'Ljy03071022'
+	@docker push $(REGISTRY)/mysql-operator:$(VERSION)
+	@docker push $(REGISTRY)/mysql-agent:$(VERSION)
 
 .PHONY: version
 version:
@@ -106,10 +112,10 @@ clean:
 .PHONY: run-dev
 run-dev:
 	@go run \
-	    -ldflags "-X ${PKG}/pkg/version.buildVersion=${MYSQL_AGENT_VERSION}" \
+	    -ldflags "-X ${PKG}/pkg/version.buildVersion=${VERSION}" \
 	    cmd/mysql-operator/main.go \
-	    --mysql-agent-image=iad.ocir.io/$(TENANT)/mysql-agent \
-	    --kubeconfig=${KUBECONFIG} \
+	    --mysql-agent-image=docker.io/aipu/mysql-agent \
+	    --kubeconfig="/Users/simon/.kube/config" \
 	    --v=4 \
 	    --namespace=${USER}
 
