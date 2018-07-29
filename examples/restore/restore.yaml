@@ -2,6 +2,7 @@ apiVersion: mysql.oracle.com/v1alpha1
 kind: Restore
 metadata:
   name: mysql-restore
+  namespace: mysql-operator
 spec:
   cluster:
     name: mysql

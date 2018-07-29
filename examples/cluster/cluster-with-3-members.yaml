@@ -2,5 +2,6 @@ apiVersion: mysql.oracle.com/v1alpha1
 kind: Cluster
 metadata:
   name: mysql
+  namespace: mysql-operator
 spec:
-  members: 3
+  members: 2

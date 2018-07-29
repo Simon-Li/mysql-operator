@@ -122,7 +122,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: mysql-operator
-  namespace: <NAMESPACE>
+  namespace: mysql-operator
 
 ---
 kind: RoleBinding
@@ -136,4 +136,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: mysql-agent
-  namespace: <NAMESPACE>
+  namespace: mysql-operator

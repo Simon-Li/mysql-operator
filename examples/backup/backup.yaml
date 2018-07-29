@@ -2,17 +2,18 @@ apiVersion: mysql.oracle.com/v1alpha1
 kind: Backup
 metadata:
   name: mysql-backup
+  namespace: mysql-operator
 spec:
   executor:
     mysqldump:
       databases:
-        - name: test
+        - name: wfe
   storageProvider:
     s3:
-      endpoint: ocitenancy.compat.objectstorage.ociregion.oraclecloud.com
-      region:   ociregion
-      bucket:   mybucket
+      endpoint: s3.us-west-2.amazonaws.com
+      region:   us-west-2
+      bucket:   mysql-operator-backup
       credentialsSecret:
         name: s3-credentials
-  clusterRef:
-    name: mysql
+  cluster:
+      name: mysql

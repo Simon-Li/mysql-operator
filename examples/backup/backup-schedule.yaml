@@ -2,8 +2,10 @@ apiVersion: mysql.oracle.com/v1alpha1
 kind: BackupSchedule
 metadata:
   name: mysql-backup-schedule
+  namespace: default
 spec:
-  schedule: '30 * * * *'
+  namespace: mysql-operator
+  schedule: '2 * * * *'
   backupTemplate:
     executor:
       mysqldump:
