@@ -93,7 +93,7 @@ build-docker:
 #@docker push $(REGISTRY)/$(TENANT)/mysql-agent:$(VERSION)
 .PHONY: push
 push: build build-docker	
-	@docker login docker.io -u aipu -p 'Ljy03071022'
+	@docker login docker.io -u aipu -p 'sss123456'
 	@docker push $(REGISTRY)/mysql-operator:$(VERSION)
 	@docker push $(REGISTRY)/mysql-agent:$(VERSION)
 
