@@ -6,5 +6,5 @@ operator:
   register_crd: true
 image:
   registry: docker.io/aipu
-  tag: mysql-operator-07526326-dirty
+  tag: simon-8c53792d
   pullPolicy: Always
