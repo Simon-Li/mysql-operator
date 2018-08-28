@@ -132,24 +132,23 @@ func NewOperatorController(
 				}
 				c.queue.Add(key)
 			},
-			/*
-				UpdateFunc: func(oldObj, newObj interface{}) {
-					new := newObj.(*v1alpha1.Backup)
-					glog.V(4).Infof("[DEBUG] Backup %q is updated with %v", kubeutil.NamespaceAndName(new), new)
+			UpdateFunc: func(oldObj, newObj interface{}) {
+				new := newObj.(*v1alpha1.Backup)
+				glog.V(4).Infof("[DEBUG Backup] %q is updated with %v", kubeutil.NamespaceAndName(new), new)
 
-					_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupScheduled)
-					if cond != nil && cond.Status == corev1.ConditionTrue {
-						key, err := cache.MetaNamespaceKeyFunc(new)
-						if err != nil {
-							glog.Errorf("Error creating queue key, item not added to queue: %v", err)
-							return
-						}
-						c.queue.Add(key)
+				_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupScheduled)
+				if cond != nil && cond.Status == corev1.ConditionTrue {
+					key, err := cache.MetaNamespaceKeyFunc(new)
+					if err != nil {
+						glog.Errorf("Error creating queue key, item not added to queue: %v", err)
 						return
 					}
-					glog.V(4).Infof("Backup %q is not Scheduled on this agent")
+					c.queue.Add(key)
+					return
+				}
+				glog.V(4).Infof("Backup %q is not Scheduled on this agent")
 
-				},*/
+			},
 		},
 	)
 
