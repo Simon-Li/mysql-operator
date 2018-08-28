@@ -136,7 +136,7 @@ func NewOperatorController(
 				new := newObj.(*v1alpha1.Backup)
 				glog.V(4).Infof("[DEBUG Backup] %q is updated with %v", kubeutil.NamespaceAndName(new), new)
 
-				_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupScheduled)
+				_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupFailed)
 				if cond != nil && cond.Status == corev1.ConditionTrue {
 					key, err := cache.MetaNamespaceKeyFunc(new)
 					if err != nil {
@@ -144,10 +144,10 @@ func NewOperatorController(
 						return
 					}
 					c.queue.Add(key)
+					glog.V(4).Infof("Backup %q queued", kubeutil.NamespaceAndName(new))
 					return
 				}
-				glog.V(4).Infof("Backup %q is not Scheduled on this agent")
-
+				glog.V(4).Infof("Backup %q is not Scheduled, skipping.", kubeutil.NamespaceAndName(new))
 			},
 		},
 	)
