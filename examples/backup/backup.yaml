@@ -16,4 +16,4 @@ spec:
       credentialsSecret:
         name: s3-credentials
   cluster:
-      name: mysql
+      name: mysql44
