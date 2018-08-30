@@ -117,6 +117,7 @@ func NewOperatorController(
 		cache.ResourceEventHandlerFuncs{
 			AddFunc: func(obj interface{}) {
 				backup := obj.(*v1alpha1.Backup)
+				glog.V(4).Infof("[DEBUG AddFunc] %q is updated with %v", kubeutil.NamespaceAndName(backup), backup)
 
 				_, cond := backuputil.GetBackupCondition(&backup.Status, v1alpha1.BackupScheduled)
 				if cond != nil && cond.Status == corev1.ConditionTrue {
@@ -154,8 +155,8 @@ func NewOperatorController(
 					glog.V(4).Infof("[DEBUG UpdateFunc] Backup %q is already scheduled on Cluster member %q",
 						kubeutil.NamespaceAndName(new), new.Spec.ScheduledMember)
 					//c.queue.Forget(key)
-					c.queue.Add(key)
-					return
+					//c.queue.Add(key)
+					//return
 				}
 
 				c.queue.Add(key)
