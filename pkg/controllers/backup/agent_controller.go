@@ -364,16 +364,6 @@ func (controller *AgentController) performBackup(backup *v1alpha1.Backup, creds 
 	// Set defaults (incl. operator version label).
 	backup = backup.EnsureDefaults()
 
-	// backup.Status.TimeStarted = metav1.Time{Time: started}
-	// backup.Status.TimeCompleted = metav1.Time{Time: finished}
-	// backup.Status.Outcome = v1alpha1.BackupOutcome{Location: key}
-	// if err := controller.conditionUpdater.Update(backup, &v1alpha1.BackupCondition{
-	// 	Type:   v1alpha1.BackupComplete,
-	// 	Status: corev1.ConditionTrue,
-	// }); err != nil {
-	// 	return errors.Wrapf(err, "failed to mark Backup %q as complete", kubeutil.NamespaceAndName(backup))
-	// }
-
 	backup.Status.TimeStarted = metav1.Time{Time: started}
 	backup.Status.TimeCompleted = metav1.Time{Time: finished}
 	backup.Status.Outcome = v1alpha1.BackupOutcome{Location: key}
