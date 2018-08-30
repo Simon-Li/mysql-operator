@@ -355,6 +355,16 @@ func (controller *AgentController) performBackup(backup *v1alpha1.Backup, creds 
 
 	finished := time.Now()
 
+	// Get resource from store.
+	backup, err = controller.backupLister.Backups(backup.GetNamespace()).Get(backup.GetName())
+	if err != nil {
+		return errors.Wrap(err, "error getting Backup")
+	}
+	// Don't modify items in the cache.
+	backup = backup.DeepCopy()
+	// Set defaults (incl. operator version label).
+	backup = backup.EnsureDefaults()
+
 	backup.Status.TimeStarted = metav1.Time{Time: started}
 	backup.Status.TimeCompleted = metav1.Time{Time: finished}
 	backup.Status.Outcome = v1alpha1.BackupOutcome{Location: key}
