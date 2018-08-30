@@ -130,13 +130,12 @@ func NewAgentController(
 
 				_, cond := backuputil.GetBackupCondition(&backup.Status, v1alpha1.BackupComplete)
 				if cond != nil && cond.Status == corev1.ConditionTrue {
-					key, err := cache.MetaNamespaceKeyFunc(backup)
-					if err != nil {
-						glog.Errorf("Error creating queue key, item not added to queue: %v", err)
-						return
-					}
-					c.queue.Forget(key)
 					glog.V(2).Infof("Backup %q is Complete, skipping.", kubeutil.NamespaceAndName(backup))
+					return
+				}
+				_, cond = backuputil.GetBackupCondition(&backup.Status, v1alpha1.BackupRunning)
+				if cond != nil && cond.Status == corev1.ConditionTrue {
+					glog.V(2).Infof("Backup %q is Running, skipping.", kubeutil.NamespaceAndName(backup))
 					return
 				}
 
