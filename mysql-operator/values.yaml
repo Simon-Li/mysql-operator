@@ -6,5 +6,5 @@ operator:
   register_crd: true
 image:
   registry: docker.io/aipu
-  tag: simon-669af764
+  tag: simon-4fd59382
   pullPolicy: Always

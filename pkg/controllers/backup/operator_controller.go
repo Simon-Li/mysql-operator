@@ -154,6 +154,7 @@ func NewOperatorController(
 					glog.V(4).Infof("[DEBUG UpdateFunc] Backup %q is already scheduled on Cluster member %q",
 						kubeutil.NamespaceAndName(new), new.Spec.ScheduledMember)
 					//c.queue.Forget(key)
+					c.queue.Add(key)
 					return
 				}
 
