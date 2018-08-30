@@ -125,33 +125,33 @@ func NewAgentController(
 
 	backupInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
-			UpdateFunc: func(oldObj, newObj interface{}) {
-				new := newObj.(*v1alpha1.Backup)
+			AddFunc: func(obj interface{}) {
+				backup := obj.(*v1alpha1.Backup)
 
-				_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupComplete)
+				_, cond := backuputil.GetBackupCondition(&backup.Status, v1alpha1.BackupComplete)
 				if cond != nil && cond.Status == corev1.ConditionTrue {
-					key, err := cache.MetaNamespaceKeyFunc(new)
+					key, err := cache.MetaNamespaceKeyFunc(backup)
 					if err != nil {
 						glog.Errorf("Error creating queue key, item not added to queue: %v", err)
 						return
 					}
 					c.queue.Forget(key)
-					glog.V(2).Infof("Backup %q is Complete, skipping.", kubeutil.NamespaceAndName(new))
+					glog.V(2).Infof("Backup %q is Complete, skipping.", kubeutil.NamespaceAndName(backup))
 					return
 				}
 
-				_, cond = backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupScheduled)
-				if cond != nil && cond.Status == corev1.ConditionTrue && new.Spec.ScheduledMember == c.podName {
-					key, err := cache.MetaNamespaceKeyFunc(new)
+				_, cond = backuputil.GetBackupCondition(&backup.Status, v1alpha1.BackupScheduled)
+				if cond != nil && cond.Status == corev1.ConditionTrue && backup.Spec.ScheduledMember == c.podName {
+					key, err := cache.MetaNamespaceKeyFunc(backup)
 					if err != nil {
 						glog.Errorf("Error creating queue key, item not added to queue: %v", err)
 						return
 					}
 					c.queue.Add(key)
-					glog.V(2).Infof("Backup %q queued", kubeutil.NamespaceAndName(new))
+					glog.V(2).Infof("Backup %q queued", kubeutil.NamespaceAndName(backup))
 					return
 				}
-				glog.V(2).Infof("Backup %q is not Scheduled, skipping.", kubeutil.NamespaceAndName(new))
+				glog.V(2).Infof("Backup %q is not Scheduled, skipping.", kubeutil.NamespaceAndName(backup))
 
 			},
 		},

@@ -145,7 +145,7 @@ func NewOperatorController(
 				_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupComplete)
 				if cond != nil && cond.Status == corev1.ConditionTrue {
 					glog.V(2).Infof("[DEBUG UpdateFunc] Backup %q is Complete, skipping.", kubeutil.NamespaceAndName(new))
-					c.queue.Forget(key)
+					//c.queue.Forget(key)
 					return
 				}
 
@@ -153,7 +153,7 @@ func NewOperatorController(
 				if cond != nil && cond.Status == corev1.ConditionTrue {
 					glog.V(4).Infof("[DEBUG UpdateFunc] Backup %q is already scheduled on Cluster member %q",
 						kubeutil.NamespaceAndName(new), new.Spec.ScheduledMember)
-					c.queue.Forget(key)
+					//c.queue.Forget(key)
 					return
 				}
 
