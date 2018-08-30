@@ -127,7 +127,14 @@ func NewAgentController(
 		cache.ResourceEventHandlerFuncs{
 			UpdateFunc: func(oldObj, newObj interface{}) {
 				new := newObj.(*v1alpha1.Backup)
-				_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupScheduled)
+
+				_, cond := backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupComplete)
+				if cond != nil && cond.Status == corev1.ConditionTrue {
+					glog.V(2).Infof("Backup %q is Complete, skipping.", kubeutil.NamespaceAndName(new))
+					return
+				}
+
+				_, cond = backuputil.GetBackupCondition(&new.Status, v1alpha1.BackupScheduled)
 				if cond != nil && cond.Status == corev1.ConditionTrue && new.Spec.ScheduledMember == c.podName {
 					key, err := cache.MetaNamespaceKeyFunc(new)
 					if err != nil {
