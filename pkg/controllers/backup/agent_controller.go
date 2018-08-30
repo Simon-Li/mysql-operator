@@ -125,8 +125,8 @@ func NewAgentController(
 
 	backupInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
-			AddFunc: func(obj interface{}) {
-				backup := obj.(*v1alpha1.Backup)
+			UpdateFunc: func(oldObj, newObj interface{}) {
+				backup := newObj.(*v1alpha1.Backup)
 
 				_, cond := backuputil.GetBackupCondition(&backup.Status, v1alpha1.BackupComplete)
 				if cond != nil && cond.Status == corev1.ConditionTrue {
